@@ -20,10 +20,19 @@ class FeedbackController:
             print(f)
 
 
-        evaluation_result = self.llm_service.evaluate(feedback_id, feedback_text)
+        #evaluation_result = self.llm_service.evaluate(feedback_id, feedback_text)
 
-        self.feature_service.save_feature(evaluation_result)
+        #self.feature_service.save_feature(evaluation_result)
 
-        print(evaluation_result)
+        for f in self.feature_service.get_all_features():
+            print(f)
+
+        #print(evaluation_result)
 
         return {"ok": True}
+    
+    def get_all_feedbacks(self):
+        return self.feedback_service.get_all_feedbacks()
+    
+    def get_all_features(self):
+        return self.feature_service.get_all_features()

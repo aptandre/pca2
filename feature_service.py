@@ -29,3 +29,17 @@ class FeatureService:
         except MySQLdb.Error as e:
             print("Erro ao salvar feature:", e)
             return False
+        
+    def get_all_features(self):
+        try:
+            cur = self.db.connection.cursor()
+            cur.execute("SELECT id, sentiment, features FROM feature")
+            rows = cur.fetchall()
+            cur.close()
+
+            features = [Feature(row[0], row[1], row[2]) for row in rows]
+            return features
+        
+        except MySQLdb.Error as e:
+            print("Erro ao buscar features:", e)
+            return []
