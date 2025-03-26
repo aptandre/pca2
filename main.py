@@ -1,10 +1,17 @@
 from flask import Flask, jsonify, request
+from flask_mysqldb import MySQL
 
 from feedback_controller import FeedbackController
 
 app = Flask(__name__)
 
-feedback_controller = FeedbackController()
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'alumind_user'
+app.config['MYSQL_PASSWORD'] = '123drink'
+app.config['MYSQL_DB'] = 'alumind'
+
+mysql = MySQL(app)
+feedback_controller = FeedbackController(mysql)
 
 @app.route("/")
 def hello_world():

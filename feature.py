@@ -6,3 +6,10 @@ class Feature:
 
     def __str__(self):
         return f"id: {self.id}\nsentiment:{self.sentiment}\nfeatures:{self.features}"
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'sentiment': self.sentiment,
+            'features': self.features
+        }
