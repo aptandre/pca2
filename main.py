@@ -1,9 +1,12 @@
+from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 from flask_mysqldb import MySQL
 
 from feedback_controller import FeedbackController
 
 app = Flask(__name__)
+
+load_dotenv()
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'alumind_user'

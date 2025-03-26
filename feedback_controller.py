@@ -10,9 +10,7 @@ class FeedbackController:
         self.feature_service = FeatureService(db)
 
     def get_evaluation(self, data):
-        print(data)
-        print(type(data))
-        print("\n\n\n")
+
         feedback_id = data['id']
         feedback_text = data['feedback']
 
@@ -22,10 +20,10 @@ class FeedbackController:
             print(f)
 
 
-        #evaluation_result = self.llm_service.evaluate(feedback_id, feedback_text)
+        evaluation_result = self.llm_service.evaluate(feedback_id, feedback_text)
 
-        #self.feature_service.save_feature(evaluation_result)
+        self.feature_service.save_feature(evaluation_result)
 
-        #print(evaluation_result)
+        print(evaluation_result)
 
         return {"ok": True}
