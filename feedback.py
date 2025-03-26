@@ -4,4 +4,4 @@ class Feedback:
         self.feedback = feedback
 
     def __str__(self):
-        print(f"id:{self.id}\ntext:{self.feedback}")
+        return f"id:{self.id}\ntext:{self.feedback}"

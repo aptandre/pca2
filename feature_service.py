@@ -10,4 +10,5 @@ class FeatureService:
         features = evaluation_result['features']
 
         feature = Feature(id, sentiment, features)
-        print("PERSISTIDO!")
+        print("FEATURE PERSISTIDO!")
+        print(feature)
