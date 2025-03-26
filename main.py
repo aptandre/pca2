@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, jsonify, request
 
 from feedback_controller import FeedbackController
 
@@ -12,6 +12,7 @@ def hello_world():
 
 @app.route("/feedbacks", methods=['POST'])
 def get_feedback_evaluation():
-    data = request.get_data()
+    data = request.get_json()
 
-    return feedback_controller.get_evaluation(data)
+    parsed_data = feedback_controller.get_evaluation(data)
+    return jsonify(parsed_data)
