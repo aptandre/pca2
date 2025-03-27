@@ -1,3 +1,4 @@
+from src.service.metrics_service import MetricsService
 from src.service.feature_service import FeatureService
 from src.service.feedback_service import FeedbackService
 from src.service.llm_service import LLMService
@@ -8,6 +9,7 @@ class FeedbackController:
         self.feedback_service = FeedbackService(db)
         self.llm_service = LLMService(db)
         self.feature_service = FeatureService(db)
+        self.metrics_service = MetricsService(db)
 
     def get_evaluation(self, data):
 
@@ -36,3 +38,9 @@ class FeedbackController:
     
     def get_all_features(self):
         return self.feature_service.get_all_features()
+    
+    def get_feedbacks_percentage(self):
+        return self.metrics_service.get_percentage_feedbacks()
+    
+    def get_feedbacks_ranking(self):
+        return self.metrics_service.get_most_wanted_features()
