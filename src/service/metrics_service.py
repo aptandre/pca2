@@ -1,7 +1,6 @@
 import json
 from typing import Counter
 
-
 class MetricsService:
     def __init__(self, database, feature_service):
         self.database = database

@@ -25,7 +25,7 @@ class EmailService:
     def send_report(self):
         email_body = self.generate_summary()
 
-        sender_email = "andrewtxiz@gmail.com"
+        sender_email = os.getenv("USER_EMAIL")
         subject = "Resumo dos Feedbacks da Semana - AluMind"
 
         try:
