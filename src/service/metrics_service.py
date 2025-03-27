@@ -3,12 +3,13 @@ from typing import Counter
 
 
 class MetricsService:
-    def __init__(self, database):
+    def __init__(self, database, feature_service):
         self.database = database
+        self.feature_service = feature_service
 
     def get_percentage_feedbacks(self):
 
-        features = self.database.get_all_features()
+        features = self.feature_service.get_all_features()
 
         sentiment_count = Counter([f.sentiment.upper() for f in features])
 
@@ -25,7 +26,7 @@ class MetricsService:
         
         all_feature_codes = []
 
-        features = self.database.get_all_features()
+        features = self.feature_service.get_all_features()
 
         for f in features:
             feature_list = f.features

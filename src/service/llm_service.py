@@ -8,7 +8,6 @@ class LLMService:
         openai.api_key = os.getenv("OPENAI_API_KEY")
 
     def evaluate(self, id, text):
-        print("\n\n\nTO AQUI NE NO EVALUATE\n\n\n")
         prompt = (
             
                 "Você é um classificador de feedbacks altamente competente e tem a tarefa de analisar o seguinte feedback\n"
@@ -66,7 +65,6 @@ class LLMService:
                 "}"
         )
 
-        print("\n\n\nPREPARA QUE VOU MANDAR A REQUISIÇÃO\n\n\n")
         try:
             response = openai.chat.completions.create(
                 model="gpt-3.5-turbo",
@@ -84,6 +82,41 @@ class LLMService:
                 "sentiment": parsed.get("sentiment", "unknown"),
                 "features": parsed.get("requested_features", [])
             }
+
+        except Exception as e:
+            print("Erro na chamada OpenAI:", e)
+            return {
+                "erro": "Erro na chamada OpenAI",
+                "detalhes": str(e)
+            }
+
+    def generate_email(self, feedback_data):
+        prompt = (
+        "Você é um assistente de emails muito competente em escrever emails corporativos para stakeholders da empresa AluMind.\n"
+        "Esses stakeholders precisam ser informados sobre como a empresa está se saindo a partir dos feedbacks dos usuários.\n"
+        "Assim sendo, você receberá, a seguir, separado por aspas triplas, os dados brutos dos dados coletados sobre os feedbacks\n"
+        "mais recentes e deverá compor um email corporativo para os stakeholders da empresa AluMind.\n"
+        "O email deverá conter as seguintes informações:\n"
+        "1.porcentagem de feedbacks positivos"
+        "2.porcentagem de feedbacks negativos"
+        "3.Principais funcionalidades pedidas e o porquê cada uma seria importante de ter."
+        "Componha o email a partir das seguintes informações:"
+        f"'''{feedback_data}'''"
+        "Você deve retornar apenas uma sting python formatada como um email corporativo."
+        )
+
+        try:
+            response = openai.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0
+            )
+
+            content = response.choices[0].message.content
+
+            return content
 
         except Exception as e:
             print("Erro na chamada OpenAI:", e)

@@ -16,7 +16,7 @@ app.config['MYSQL_PASSWORD'] = '123drink'
 app.config['MYSQL_DB'] = 'alumind'
 
 mysql = MySQL(app)
-feedback_controller = FeedbackController(mysql)
+feedback_controller = FeedbackController(mysql, ['andre.alves@ccc.ufcg.edu.br'])
 
 @app.route("/")
 def home_page():
@@ -37,4 +37,5 @@ def get_feedback_evaluation():
     data = request.get_json()
 
     parsed_data = feedback_controller.get_evaluation(data)
+
     return jsonify(parsed_data)
