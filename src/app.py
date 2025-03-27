@@ -20,15 +20,24 @@ feedback_controller = FeedbackController(mysql, ['andre.alves@ccc.ufcg.edu.br'])
 
 @app.route("/")
 def home_page():
+    feedbacks = feedback_controller.get_all_feedbacks()
     features = feedback_controller.get_all_features()
 
     percents = feedback_controller.get_feedbacks_percentage()
     feature_ranking = feedback_controller.get_feedbacks_ranking()
 
+    for f in features:
+        if isinstance(f.features, str):
+            try:
+                f.features = json.loads(f.features)
+            except json.JSONDecodeError:
+                f.features = []
+                
     return render_template(
         "relatorio.html",
         porcentagens=percents,
         ranking=feature_ranking,
+        feedbacks=feedbacks,
         features=features
     )
 

@@ -1,5 +1,5 @@
 class Feature:
-    def __init__(self, id: str, sentiment: str, features: list):
+    def __init__(self, id: str, sentiment: str, features: list[dict]):
         self.id = id
         self.sentiment = sentiment
         self.features = features

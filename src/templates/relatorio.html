@@ -42,7 +42,6 @@
             height: 300px !important;
         }
     </style>
-    
 </head>
 <body>
     <h1>Relatório de Feedbacks</h1>
@@ -60,42 +59,58 @@
     </div>
 
     <h2 style="margin-top: 60px;">Detalhamento dos Feedbacks</h2>
-<table style="width: 100%; border-collapse: collapse; background: white; margin-top: 20px;">
-    <thead>
-        <tr style="background-color: #2196F3; color: white;">
-            <th style="padding: 10px; text-align: left;">ID</th>
-            <th style="padding: 10px; text-align: left;">Sentimento</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for f in features %}
-        <tr>
-            <td colspan="2">
-                <details style="width: 100%;">
-                    <summary style="padding: 10px; cursor: pointer; font-weight: bold; background-color: #f7f7f7; border-bottom: 1px solid #ddd;">
-                        {{ f.id }} — {{ f.sentiment }}
-                    </summary>
-                    <div style="padding: 15px;">
-                        <strong>Feedback:</strong>
-                        <p>
-                            {% for fb in feedbacks if fb.id == f.id %}
-                                {{ fb.feedback }}
-                            {% endfor %}
-                        </p>
-                        <strong>Features solicitadas:</strong>
+    <table style="width: 100%; border-collapse: collapse; background: white; margin-top: 20px;">
+        <thead>
+            <tr style="background-color: #2196F3; color: white;">
+                <th style="padding: 10px;">ID</th>
+                <th style="padding: 10px;">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fb in feedbacks %}
+            <tr class="summary-row" style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px;">{{ fb.id }}</td>
+                <td style="padding: 10px;">
+                    <button onclick="toggleDetails('{{ fb.id }}')" style="padding: 5px 10px;">Ver detalhes</button>
+                </td>
+            </tr>
+            <tr id="details-{{ fb.id }}" class="details-row" style="display: none; background-color: #f9f9f9;">
+                <td colspan="2" style="padding: 15px;">
+                    {% set related_feature = (features | selectattr("id", "equalto", fb.id) | list).0 %}
+                    <strong>Sentimento:</strong> {{ related_feature.sentiment if related_feature else 'Não avaliado' }}<br><br>
+                    
+                    <strong>Feedback:</strong>
+                    <p>{{ fb.feedback }}</p>
+                    
+                    <strong>Features solicitadas:</strong>
+                    {% if related_feature and related_feature.features %}
                         <ul>
-                            {% for feat in f.features %}
-                                <li><strong>{{ feat.code }}</strong>: {{ feat.reason }}</li>
+                            {% for feat in related_feature.features %}
+                                {% if feat.code and feat.reason %}
+                                    <li>
+                                        <strong>{{ feat.code }}</strong>: {{ feat.reason }}
+                                    </li>
+                                {% else %}
+                                    <li>Informações da feature incompletas.</li>
+                                {% endif %}
                             {% endfor %}
                         </ul>
-                    </div>
-                </details>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                    {% else %}
+                        <p>Nenhuma feature identificada.</p>
+                    {% endif %}
 
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function toggleDetails(id) {
+            const row = document.getElementById(`details-${id}`);
+            row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+        }
+    </script>
 
     <script>
         const sentimentData = {
