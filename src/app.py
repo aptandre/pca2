@@ -1,10 +1,12 @@
 import json
 import os
+import MySQLdb
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
 from flask_mysqldb import MySQL
 
 from src.controller.feedback_controller import FeedbackController
+from src.service.db_setup_service import DatabaseSetupService
 
 app = Flask(__name__)
 
@@ -18,6 +20,13 @@ app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')
 mysql = MySQL(app)
 
 feedback_controller = FeedbackController(mysql, ['andre.alves@ccc.ufcg.edu.br'])
+db_setup_service = DatabaseSetupService(mysql)
+
+@app.before_first_request
+def setup_database():
+    db_setup_service.create_database()
+    db_setup_service.create_tables()
+
 
 @app.route("/")
 def home_page():
