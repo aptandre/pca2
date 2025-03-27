@@ -2,15 +2,15 @@ import json
 from typing import Counter
 
 class MetricsService:
-    def __init__(self, database, feature_service):
+    def __init__(self, database, feedback_response_service):
         self.database = database
-        self.feature_service = feature_service
+        self.feedback_response_service = feedback_response_service
 
     def get_percentage_feedbacks(self):
 
-        features = self.feature_service.get_all_features()
+        feedback_responses = self.feedback_response_service.get_all_feedback_response()
 
-        sentiment_count = Counter([f.sentiment.upper() for f in features])
+        sentiment_count = Counter([f.sentiment.upper() for f in feedback_responses])
 
         total = sum(sentiment_count.values())
         percents = {
@@ -25,9 +25,9 @@ class MetricsService:
         
         all_feature_codes = []
 
-        features = self.feature_service.get_all_features()
+        feedback_responses = self.feedback_response_service.get_all_feedback_response()
 
-        for f in features:
+        for f in feedback_responses:
             feature_list = f.features
             if isinstance(feature_list, str):
                 try:
