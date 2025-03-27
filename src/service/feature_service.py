@@ -7,8 +7,6 @@ class FeatureService:
         self.db = db
 
     def save_feature(self, evaluation_result):
-        print('O RESULT FOI ESSE: \n\n\n')
-        print(evaluation_result)
         id = evaluation_result['id']
         sentiment = evaluation_result['sentiment']
         features = evaluation_result['features']

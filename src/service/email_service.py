@@ -18,7 +18,6 @@ class EmailService:
         email_body = str(self.llm_service.generate_email(raw_data))
 
         for feature in requested_features:
-            print(feature)
             email_body += f"- {feature[0]}: {feature[1]}\n"
         
         return email_body

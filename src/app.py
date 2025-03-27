@@ -1,5 +1,5 @@
 import json
-from typing import Counter
+import os
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
 from flask_mysqldb import MySQL
@@ -11,9 +11,9 @@ app = Flask(__name__)
 load_dotenv()
 
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'alumind_user'
-app.config['MYSQL_PASSWORD'] = '123drink'
-app.config['MYSQL_DB'] = 'alumind'
+app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
+app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
+app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')
 
 mysql = MySQL(app)
 feedback_controller = FeedbackController(mysql, ['andre.alves@ccc.ufcg.edu.br'])

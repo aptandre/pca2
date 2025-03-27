@@ -4,7 +4,6 @@ from src.service.feature_service import FeatureService
 from src.service.feedback_service import FeedbackService
 from src.service.llm_service import LLMService
 import schedule
-import time
 
 class FeedbackController:
     def __init__(self, db, stakeholders_list):
@@ -20,16 +19,39 @@ class FeedbackController:
         feedback_id = data['id']
         feedback_text = data['feedback']
 
-        self.feedback_service.save_feedback(feedback_id, feedback_text)
+        try:
+            self.feedback_service.save_feedback(feedback_id, feedback_text)
+        except Exception as e:
+            return {
+                'error': 'Erro ao salvar feedback',
+                'message': str(e)
+            }
 
+        try:
+            evaluation_result = self.llm_service.evaluate(feedback_id, feedback_text)
+        except Exception as e:
+            return {
+                'error': 'Ocorreu um erro ao tentar avaliar o feedback.',
+                'message': str(e)
+            }
+        
+        try:
+            self.feature_service.save_feature(evaluation_result)
+        except Exception as e:
+            return {
+                'error': 'Erro ao salvar a feature desejada.',
+                'message': str(e)
+            }
 
-        # evaluation_result = self.llm_service.evaluate(feedback_id, feedback_text)
+        try:
+            self.send_email_to_stakeholders()
+        except Exception as e:
+            return {
+                'error': 'Erro ao enviar e-mail aos stakeholders.',
+                'message': str(e)
+            }
 
-        # self.feature_service.save_feature(evaluation_result)
-
-        # self.send_email_to_stakeholders()
-
-        return {"ok": True}
+        return evaluation_result
     
     def get_all_feedbacks(self):
         return self.feedback_service.get_all_feedbacks()
@@ -44,9 +66,4 @@ class FeedbackController:
         return self.metrics_service.get_most_wanted_features()
     
     def send_email_to_stakeholders(self):
-        schedule.every().friday.at("17:00").do(self.send_email_to_stakeholders)
-
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
-            self.email_service.send_report()
+        schedule.every().friday.at("17:00").do(self.email_service.send_report())
