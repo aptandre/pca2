@@ -1,5 +1,6 @@
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import os
 import smtplib
 
 class EmailService:
@@ -31,7 +32,10 @@ class EmailService:
         try:
             with smtplib.SMTP('smtp.gmail.com', 587) as server:
                 server.starttls()
-                server.login("andrewtxiz@gmail.com", "seegjwxnmbrnyxfn")
+                
+                user_email = os.getenv("USER_EMAIL")
+                user_password = os.getenv("USER_PASSWORD")
+                server.login(user_email, user_password)
 
                 for stakeholder in self.stakeholders:
                     message = MIMEMultipart()

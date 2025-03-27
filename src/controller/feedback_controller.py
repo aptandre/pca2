@@ -22,21 +22,12 @@ class FeedbackController:
 
         self.feedback_service.save_feedback(feedback_id, feedback_text)
 
-        for f in self.feedback_service.get_all_feedbacks():
-            print(f)
 
+        # evaluation_result = self.llm_service.evaluate(feedback_id, feedback_text)
 
-        #evaluation_result = self.llm_service.evaluate(feedback_id, feedback_text)
-
-        #self.feature_service.save_feature(evaluation_result)
-
-        for f in self.feature_service.get_all_features():
-            print(f)
+        # self.feature_service.save_feature(evaluation_result)
 
         # self.send_email_to_stakeholders()
-
-
-        #print(evaluation_result)
 
         return {"ok": True}
     
