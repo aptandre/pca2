@@ -40,9 +40,10 @@ USER_PASSWORD=   # Senha de aplicação Google (Configuração: https://support.
 MYSQL_USER='alumind_user'     # Usuário MySQL (padrão: alumind_user)
 MYSQL_PASSWORD=  # Senha MySQL
 MYSQL_DB='alumind'       # Nome do banco de dados (padrão: alumind)
-MYSQL_ROOT_USER= # Usuário root do mysql, necessário para criar as tabelas
-MYSQL_ROOT_PASSWORD= # Senha do usuário root do mysql, necessário para criar as tabelas
 ```
+
+Crie um usuário alumind_user no seu banco de dados MySQL e dê passe as credenciais dele para as variáveis de ambiente
+MYSQL_USER e MY_SQLPASSWORD. Alternativamente, você pode utilizar o usuário root.
 
 4. Com as variáveis de ambiente definidas, execute o comando para iniciar o servidor Flask:
    ```bash
