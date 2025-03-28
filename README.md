@@ -37,9 +37,11 @@ pip install venv
 OPENAI_API_KEY=  # Chave da OpenAI com créditos suficientes
 USER_EMAIL=      # Conta Google válida
 USER_PASSWORD=   # Senha de aplicação Google (Configuração: https://support.google.com/accounts/answer/185833?hl=en)
-MYSQL_USER=      # Usuário MySQL (padrão: alumind_user)
+MYSQL_USER='alumind_user'     # Usuário MySQL (padrão: alumind_user)
 MYSQL_PASSWORD=  # Senha MySQL
-MYSQL_DB=        # Nome do banco de dados (padrão: alumind)
+MYSQL_DB='alumind'       # Nome do banco de dados (padrão: alumind)
+MYSQL_ROOT_USER= # Usuário root do mysql, necessário para criar as tabelas
+MYSQL_ROOT_PASSWORD= # Senha do usuário root do mysql, necessário para criar as tabelas
 ```
 
 4. Com as variáveis de ambiente definidas, execute o comando para iniciar o servidor Flask:
