@@ -41,9 +41,49 @@ MYSQL_USER='alumind_user'     # Usuário MySQL (padrão: alumind_user)
 MYSQL_PASSWORD=  # Senha MySQL
 MYSQL_DB='alumind'       # Nome do banco de dados (padrão: alumind)
 ```
+Para configurar o banco de dados, é necessário ter o MySQL instalado, você deverá abrir um terminal MySQL e então:
 
-Crie um usuário alumind_user no seu banco de dados MySQL e dê passe as credenciais dele para as variáveis de ambiente
-MYSQL_USER e MY_SQLPASSWORD. Alternativamente, você pode utilizar o usuário root.
+Utilize os seguintes comandos num terminal MySQL para criar o banco e as tabelas:
+```
+CREATE DATABASE alumind;
+```
+
+```
+CREATE TABLE feedback (
+                        id INT PRIMARY KEY,
+                        feedback TEXT NOT NULL
+                    );
+```
+
+```
+CREATE TABLE feature (
+                        id INT PRIMARY KEY,
+                        feature_name VARCHAR(100) NOT NULL
+                    );
+```
+
+Crie um usuário alumind_user em um terminal MySQL utilizando o comando:
+```
+mysql -u root -p
+```
+Esse comando fará o login no terminal MySQL como root user, então, crie um novo usuário alumin_user
+
+```
+CREATE USER 'alumind_user'@'localhost' IDENTIFIED BY 'password';
+```
+Você pode substituir a senha pela senha que preferir.
+
+Agora, com o usuário criado e as tabelas também, você deve executar os comandos:
+```
+GRANT ALL PRIVILEGES ON alumind.* TO 'alumind_user'@'localhost';
+```
+
+```
+FLUSH PRIVILEGES;
+```
+
+Ótimo! Agora com o novo usuário alumind_user no seu banco de dados MySQL, passe as credenciais dele para as variáveis de ambiente
+MYSQL_USER e MY_SQLPASSWORD no arquivo .env. Alternativamente, você pode utilizar o usuário root.
 
 4. Com as variáveis de ambiente definidas, execute o comando para iniciar o servidor Flask:
    ```bash
