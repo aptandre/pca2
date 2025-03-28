@@ -24,6 +24,7 @@ db_setup_service = DatabaseSetupService(mysql)
 
 @app.before_first_request
 def setup_database():
+    db_setup_service.setup_mysql_permissions()
     db_setup_service.create_database()
     db_setup_service.create_tables()
 

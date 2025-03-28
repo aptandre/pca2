@@ -5,6 +5,27 @@ class DatabaseSetupService:
     def __init__(self, mysql):
         self.mysql = mysql
 
+    def setup_mysql_permissions(self):
+        try:
+            conn = MySQLdb.connect(
+                host='localhost',
+                user=os.getenv('MYSQL_ROOT_USER'),
+                passwd=os.getenv('MYSQL_ROOT_PASSWORD')
+            )
+            cur = conn.cursor()
+            
+            cur.execute(f"GRANT ALL PRIVILEGES ON *.* TO 'alumind_user'@'localhost' WITH GRANT OPTION;")
+            cur.execute(f"GRANT ALL PRIVILEGES ON {os.getenv('MYSQL_DB')}.* TO 'alumind_user'@'localhost';")
+            
+            cur.execute("FLUSH PRIVILEGES;")
+            
+            cur.close()
+            conn.close()
+            print("Permissões concedidas com sucesso ao usuário 'alumind_user'.")
+        
+        except MySQLdb.Error as e:
+            print(f"Erro ao conceder permissões: {e}")
+
     def create_database(self):
         try:
             conn = MySQLdb.connect(
@@ -57,7 +78,6 @@ class DatabaseSetupService:
                     PRIMARY KEY (id),
                     FOREIGN KEY (id) REFERENCES feedback(id) ON DELETE CASCADE
                     );
-
                 """)
                 print("Tabela 'feature' criada com sucesso!")
 

@@ -13,6 +13,8 @@ class MetricsService:
         sentiment_count = Counter([f.sentiment.upper() for f in feedback_responses])
 
         total = sum(sentiment_count.values())
+        if total == 0:
+            total = 1
         percents = {
             'POSITIVO': round(sentiment_count.get('POSITIVO', 0) / total * 100, 1),
             'NEGATIVO': round(sentiment_count.get('NEGATIVO', 0) / total * 100, 1),
