@@ -1,7 +1,6 @@
 import os
 import MySQLdb
 
-
 class DatabaseSetupService:
     def __init__(self, mysql):
         self.mysql = mysql
@@ -42,18 +41,23 @@ class DatabaseSetupService:
             if not feedback_table_exists:
                 cur.execute("""
                     CREATE TABLE feedback (
-                        id INT PRIMARY KEY,
-                        feedback TEXT NOT NULL
-                    )
+                id VARCHAR(100) PRIMARY KEY,
+                feedback TEXT NOT NULL
+                );
+
                 """)
                 print("Tabela 'feedback' criada com sucesso!")
 
             if not feature_table_exists:
                 cur.execute("""
                     CREATE TABLE feature (
-                        id INT PRIMARY KEY,
-                        feature_name VARCHAR(100) NOT NULL
-                    )
+                    id VARCHAR(100),
+                    sentiment VARCHAR(20) NOT NULL,
+                    features JSON NOT NULL,
+                    PRIMARY KEY (id),
+                    FOREIGN KEY (id) REFERENCES feedback(id) ON DELETE CASCADE
+                    );
+
                 """)
                 print("Tabela 'feature' criada com sucesso!")
 
