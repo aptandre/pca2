@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório de Feedbacks</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 30px;
+            background-color: #f2f2f2;
+        }
+    
+        h1 {
+            text-align: center;
+        }
+    
+        .charts-container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 50px;
+        }
+    
+        .chart-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    
+        #sentimentChart {
+            width: 400px !important;
+            height: 400px !important;
+        }
+    
+        #featureChart {
+            width: 500px !important;
+            height: 300px !important;
+        }
+    </style>
+</head>
+<body>
+    <h1>Relatório de Feedbacks</h1>
+
+    <div class="charts-container">
+        <div class="chart-box">
+            <h2>Distribuição de Sentimentos</h2>
+            <canvas id="sentimentChart"></canvas>
+        </div>
+
+        <div class="chart-box">
+            <h2>Top 10 Features mais Pedidas</h2>
+            <canvas id="featureChart"></canvas>
+        </div>
+    </div>
+
+    <h2 style="margin-top: 60px;">Detalhamento dos Feedbacks</h2>
+    <table style="width: 100%; border-collapse: collapse; background: white; margin-top: 20px;">
+        <thead>
+            <tr style="background-color: #2196F3; color: white;">
+                <th style="padding: 10px;">ID</th>
+                <th style="padding: 10px;">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fb in feedbacks %}
+            <tr class="summary-row" style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px;">{{ fb.id }}</td>
+                <td style="padding: 10px;">
+                    <button onclick="toggleDetails('{{ fb.id }}')" style="padding: 5px 10px;">Ver detalhes</button>
+                </td>
+            </tr>
+            <tr id="details-{{ fb.id }}" class="details-row" style="display: none; background-color: #f9f9f9;">
+                <td colspan="2" style="padding: 15px;">
+                    {% set related_feature = (features | selectattr("id", "equalto", fb.id) | list).0 %}
+                    <strong>Sentimento:</strong> {{ related_feature.sentiment if related_feature else 'Não avaliado' }}<br><br>
+                    
+                    <strong>Feedback:</strong>
+                    <p>{{ fb.feedback }}</p>
+                    
+                    <strong>Features solicitadas:</strong>
+                    {% if related_feature and related_feature.features %}
+                        <ul>
+                            {% for feat in related_feature.features %}
+                                {% if feat.code and feat.reason %}
+                                    <li>
+                                        <strong>{{ feat.code }}</strong>: {{ feat.reason }}
+                                    </li>
+                                {% else %}
+                                    <li>Informações da feature incompletas.</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>Nenhuma feature identificada.</p>
+                    {% endif %}
+
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function toggleDetails(id) {
+            const row = document.getElementById(`details-${id}`);
+            row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+        }
+    </script>
+
+    <script>
+        const sentimentData = {
+            labels: ['Positivo', 'Negativo', 'Inconclusivo'],
+            datasets: [{
+                data: [{{ porcentagens['POSITIVO'] }}, {{ porcentagens['NEGATIVO'] }}, {{ porcentagens['INCONCLUSIVO'] }}],
+                backgroundColor: ['#4CAF50', '#F44336', '#FFC107'],
+            }]
+        };
+
+        new Chart(document.getElementById('sentimentChart'), {
+            type: 'doughnut',
+            data: sentimentData
+        });
+
+        const featureLabels = {{ ranking | map(attribute=0) | list | tojson }};
+        const featureCounts = {{ ranking | map(attribute=1) | list | tojson }};
+
+        new Chart(document.getElementById('featureChart'), {
+            type: 'bar',
+            data: {
+                labels: featureLabels,
+                datasets: [{
+                    label: 'Quantidade de pedidos',
+                    data: featureCounts,
+                    backgroundColor: '#2196F3'
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        ticks: {
+                            stepSize: 1,
+                            precision: 0
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
