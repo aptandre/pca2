@@ -10,8 +10,10 @@ from src.service.db_setup_service import DatabaseSetupService
 
 app = Flask(__name__)
 
+# Carregar as variáveis de ambiente
 load_dotenv()
 
+# Configurações do MySQL
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
 app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
@@ -19,15 +21,21 @@ app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')
 
 mysql = MySQL(app)
 
+# Inicializar os controladores e serviços
 feedback_controller = FeedbackController(mysql, ['andre.alves@ccc.ufcg.edu.br'])
 db_setup_service = DatabaseSetupService(mysql)
 
-@app.before_first_request
-def setup_database():
-    db_setup_service.setup_mysql_permissions()
-    db_setup_service.create_database()
-    db_setup_service.create_tables()
+# Flag para controlar a execução da inicialização
+initialized = False
 
+@app.before_request
+def setup_database():
+    global initialized
+    if not initialized:
+        db_setup_service.setup_mysql_permissions()
+        db_setup_service.create_database()
+        db_setup_service.create_tables()
+        initialized = True
 
 @app.route("/")
 def home_page():
@@ -59,3 +67,6 @@ def get_feedback_evaluation():
     parsed_data = feedback_controller.get_evaluation(data)
 
     return jsonify(parsed_data)
+
+if __name__ == "__main__":
+    app.run(debug=True)

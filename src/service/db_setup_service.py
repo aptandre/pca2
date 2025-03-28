@@ -9,8 +9,8 @@ class DatabaseSetupService:
         try:
             conn = MySQLdb.connect(
                 host='localhost',
-                user=os.getenv('MYSQL_ROOT_USER'),
-                passwd=os.getenv('MYSQL_ROOT_PASSWORD')
+                user=os.getenv('MYSQL_USER'),
+                passwd=os.getenv('MYSQL_PASSWORD')
             )
             cur = conn.cursor()
             
